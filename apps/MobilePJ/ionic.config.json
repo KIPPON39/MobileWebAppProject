@@ -1,0 +1,7 @@
+{
+  "name": "MobilePJ",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue-vite"
+}
