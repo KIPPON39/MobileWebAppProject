@@ -1,2 +1,60 @@
-/* For information on how to create your own theme, please refer to:
-http://ionicframework.com/docs/theming/ */
+/* PaiKanThoe - ไปกันเธอ Theme Variables */
+
+* {
+  font-family: 'Kanit', sans-serif !important;
+}
+
+:root {
+  /** primary - เขียวป่า **/
+  --ion-color-primary: #2D6A4F;
+  --ion-color-primary-rgb: 45, 106, 79;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #275d45;
+  --ion-color-primary-tint: #427961;
+
+  /** secondary - น้ำตาล **/
+  --ion-color-secondary: #8B5E3C;
+  --ion-color-secondary-rgb: 139, 94, 60;
+  --ion-color-secondary-contrast: #ffffff;
+  --ion-color-secondary-contrast-rgb: 255, 255, 255;
+  --ion-color-secondary-shade: #7a5235;
+  --ion-color-secondary-tint: #976e50;
+
+  /** tertiary - ส้ม accent **/
+  --ion-color-tertiary: #E76F51;
+  --ion-color-tertiary-rgb: 231, 111, 81;
+  --ion-color-tertiary-contrast: #ffffff;
+  --ion-color-tertiary-contrast-rgb: 255, 255, 255;
+  --ion-color-tertiary-shade: #cb6247;
+  --ion-color-tertiary-tint: #e97d62;
+
+  --ion-color-success: #2dd36f;
+  --ion-color-warning: #ffc409;
+  --ion-color-danger: #eb445a;
+  --ion-color-medium: #92949c;
+  --ion-color-light: #F9F3E3;
+
+  --ion-background-color: #F9F3E3;
+  --ion-background-color-rgb: 249, 243, 227;
+
+  --ion-text-color: #2c2c2c;
+  --ion-text-color-rgb: 44, 44, 44;
+
+  --ion-toolbar-background: #2D6A4F;
+  --ion-toolbar-color: #ffffff;
+
+  --ion-tab-bar-background: #ffffff;
+  --ion-tab-bar-color: #92949c;
+  --ion-tab-bar-color-selected: #2D6A4F;
+
+  --ion-item-background: #ffffff;
+  --ion-card-background: #ffffff;
+
+  --pkt-green: #2D6A4F;
+  --pkt-cream: #F9F3E3;
+  --pkt-brown: #8B5E3C;
+  --pkt-orange: #E76F51;
+  --pkt-light-green: #52B788;
+  --pkt-dark-green: #1B4332;
+}

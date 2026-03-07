@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="utf-8" />
+    <title>ซังคนอำนาจเจริญ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #fff;
+        }
+
+        header {
+            background: linear-gradient(135deg, #f5f5f5 0%, #ffffff 100%);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        nav a {
+            color: #555;
+            text-decoration: none;
+            margin-left: 2rem;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #3498db;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #ecf0f1 0%, #bdc3c7 100%);
+            padding: 6rem 2rem;
+            text-align: center;
+            min-height: 60vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            color: #555;
+            margin-bottom: 2rem;
+            max-width: 600px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            padding: 1rem 3rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+        }
+
+        .features {
+            padding: 5rem 2rem;
+            background: white;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.2rem;
+            color: #2c3e50;
+            margin-bottom: 3rem;
+            font-weight: 700;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid #e9ecef;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .feature-card p {
+            color: #666;
+            line-height: 1.8;
+        }
+
+        .about {
+            padding: 5rem 2rem;
+            background: linear-gradient(135deg, #f5f5f5 0%, #ffffff 100%);
+        }
+
+        .about-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .about-content h2 {
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+        }
+
+        .about-content p {
+            color: #555;
+            font-size: 1.05rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.9;
+        }
+
+        .download-section {
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            text-align: center;
+            color: white;
+        }
+
+        .download-section h2 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .store-buttons {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .store-btn {
+            background: white;
+            color: #2c3e50;
+            padding: 0.8rem 2rem;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .store-btn:hover {
+            transform: scale(1.05);
+        }
+
+        footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            nav a {
+                margin-left: 1rem;
+                font-size: 0.9rem;
+            }
+
+            .hero {
+                padding: 4rem 1rem;
+                min-height: 50vh;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+            }
+
+            .features {
+                padding: 3rem 1rem;
+            }
+
+            .store-buttons {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .store-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">👑 ซังคนอำนาจเจริญ</div>
+        <nav>
+            <a href="#features">คุณสมบัติ</a>
+            <a href="#about">เกี่ยวกับ</a>
+            <a href="#download">ดาวน์โหลด</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <h1>ค้นหาสถานที่ท่องเที่ยวที่ยอดเยี่ยม</h1>
+        <p>ค้นพบสถานที่ท่องเที่ยวที่สวยงาม พบเพื่อนท่องเที่ยว และสร้างความทรงจำที่ยิ่งใหญ่</p>
+        <button class="cta-button" onclick="document.getElementById('download').scrollIntoView({behavior: 'smooth'})">
+            เริ่มต้นใช้งาน
+        </button>
+    </section>
+
+    <section class="features" id="features">
+        <h2 class="section-title">ทำไมเลือก ซังคนอำนาจเจริญ?</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🗺️</div>
+                <h3>สำรวจสถานที่ใหม่</h3>
+                <p>ค้นพบสถานที่ท่องเที่ยวที่แนะนำจากเพื่อนและท่องเที่ยวอื่นๆ</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">⭐</div>
+                <h3>รีวิวและคะแนน</h3>
+                <p>อ่านรีวิวจริงและดูคะแนนของสถานที่ก่อนไปเยี่ยม</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📸</div>
+                <h3>แบ่งปันภาพ</h3>
+                <p>อัปโหลดภาพของคุณและแบ่งปันประสบการณ์กับชุมชน</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3>วางแผนการเดินทาง</h3>
+                <p>สร้างเส้นทางการท่องเที่ยวและบันทึกสถานที่ที่ชื่นชอบ</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">👥</div>
+                <h3>เชื่อมต่อกับนักท่องเที่ยว</h3>
+                <p>พบเพื่อนท่องเที่ยวใหม่ที่มีความสนใจเดียวกัน</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📍</div>
+                <h3>ค้นหาใกล้ฉัน</h3>
+                <p>หาสถานที่ท่องเที่ยวที่อยู่ใกล้ตำแหน่งปัจจุบันของคุณ</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="about" id="about">
+        <div class="about-content">
+            <h2>เกี่ยวกับ ซังคนอำนาจเจริญ</h2>
+            <p>ซังคนอำนาจเจริญ คือแอปที่ออกแบบมาเพื่อให้ประสบการณ์การท่องเที่ยวของคุณดีขึ้น ไม่ว่าคุณจะเป็นนักท่องเที่ยวที่มีประสบการณ์หรือผู้เริ่มต้น ซังคนอำนาจเจริญจะช่วยให้คุณค้นหา จัดแผน และส่วนแบ่งประสบการณ์ท่องเที่ยวอันน่าประทับใจ</p>
+            <p>ด้วยอินเทอร์เฟซที่ใช้งานง่าย ระบบการแนะนำที่ชาญฉลาด และชุมชนผู้ใช้ที่มีชีวิตชีวา เราอยากให้การท่องเที่ยวของคุณกลายเป็นเรื่องที่ไม่ลืมเลือน</p>
+        </div>
+    </section>
+
+    <section class="download-section" id="download">
+        <h2>ดาวน์โหลด ซังคนอำนาจเจริญ วันนี้</h2>
+        <div class="store-buttons">
+            <a href="#" class="store-btn">📱 App Store</a>
+            <a href="#" class="store-btn">🤖 Google Play</a>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 ซังคนอำนาจเจริญ. สัญชาติวัตรรมชาติทั้งหมด. เก็บรักษาไว้</p>
+    </footer>
+</body>
+</html>
