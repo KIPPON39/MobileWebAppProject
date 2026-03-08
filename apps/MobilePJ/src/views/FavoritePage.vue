@@ -1,8 +1,11 @@
 <template>
   <ion-page>
     <ion-header>
-      <ion-toolbar color="primary">
-        <ion-title>รายการบันทึก ❤️</ion-title>
+      <ion-toolbar class="fav-toolbar">
+        <div class="fav-header-inner">
+          <h1 class="header-title">รายการบันทึก</h1>
+          <p class="header-sub">สถานที่ที่คุณรักและอยากไปสำรวจ</p>
+        </div>
       </ion-toolbar>
     </ion-header>
 
@@ -15,27 +18,22 @@
       <!-- Empty State -->
       <div v-else-if="favorites.length === 0" class="empty-state">
         <div class="empty-emoji">🌿</div>
-        <h2>ยังไม่มีสถานที่บันทึก</h2>
-        <p>กด ❤️ ที่หน้ารายละเอียดเพื่อบันทึกสถานที่ที่ชอบ</p>
-        <ion-button router-link="/tabs/search" color="primary" class="explore-btn">
-          สำรวจสถานที่
-        </ion-button>
+        <h2 class="empty-title">ยังไม่มีสถานที่บันทึก</h2>
+        <p class="empty-desc">กด ❤️ ที่หน้ารายละเอียดเพื่อบันทึกสถานที่ที่ชอบ</p>
+        <button class="explore-btn" @click="router.push('/tabs/search')">
+          🔍 สำรวจสถานที่
+        </button>
       </div>
 
       <!-- List -->
       <div v-else class="list-container">
-        <p class="count-text">{{ favorites.length }} สถานที่บันทึก</p>
+        <p class="count-text">{{ favorites.length }} สถานที่ที่บันทึกไว้</p>
         <CampCard
           v-for="place in favorites"
           :key="place.id"
           :place="place"
           @click="router.push(`/detail/${place.id}`)"
         />
-      </div>
-
-      <!-- Long Press info hint -->
-      <div v-if="favorites.length > 0" class="hint-text">
-        กดที่การ์ดเพื่อดูรายละเอียด
       </div>
 
       <ion-toast
@@ -54,8 +52,8 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import {
-  IonPage, IonHeader, IonToolbar, IonTitle, IonContent,
-  IonButton, IonSpinner, IonToast
+  IonPage, IonHeader, IonToolbar, IonContent,
+  IonSpinner, IonToast
 } from '@ionic/vue'
 import { doc, onSnapshot, getDoc } from 'firebase/firestore'
 import { db } from '../firebase/config'
@@ -96,66 +94,61 @@ onUnmounted(() => unsubUser?.())
 </script>
 
 <style scoped>
-ion-header ion-toolbar {
-  --background: #2D6A4F;
-  --color: #ffffff;
+/* ─ Header ─ */
+.fav-toolbar {
+  --background: #3DAA6B;
+  --min-height: 60px;
+  border-bottom: none;
+}
+.fav-header-inner {
+  padding: 12px 20px 10px;
+}
+.header-title {
+  font-size: 22px; font-weight: 800;
+  color: #ffffff; margin: 0 0 2px;
+}
+.header-sub {
+  font-size: 13px; color: rgba(255,255,255,0.8); margin: 0;
 }
 
+/* ─ States ─ */
 .loading-state {
-  display: flex;
-  justify-content: center;
+  display: flex; justify-content: center;
   padding: 80px 0;
 }
 
 .empty-state {
-  display: flex;
-  flex-direction: column;
+  display: flex; flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 80px 32px;
-  text-align: center;
+  padding: 80px 32px; text-align: center;
 }
-
 .empty-emoji {
-  font-size: 72px;
-  margin-bottom: 16px;
+  font-size: 72px; margin-bottom: 16px;
 }
-
-.empty-state h2 {
-  font-size: 20px;
-  font-weight: 600;
-  color: #2D6A4F;
-  margin: 0 0 10px;
+.empty-title {
+  font-size: 20px; font-weight: 700;
+  color: #1A2C1A; margin: 0 0 10px;
 }
-
-.empty-state p {
-  font-size: 14px;
-  color: #888;
-  line-height: 1.6;
-  margin: 0 0 24px;
+.empty-desc {
+  font-size: 14px; color: #8BAA8B;
+  line-height: 1.6; margin: 0 0 24px;
 }
-
 .explore-btn {
-  --border-radius: 12px;
-  height: 46px;
-  padding: 0 24px;
+  background: #3DAA6B;
+  color: #fff;
+  border: none; border-radius: 14px;
+  padding: 13px 28px;
+  font-size: 15px; font-weight: 600;
+  font-family: 'Kanit', sans-serif;
+  cursor: pointer; letter-spacing: 0.2px;
 }
 
+/* ─ List ─ */
 .list-container {
-  padding: 16px;
+  padding: 16px 16px 90px;
 }
-
 .count-text {
-  font-size: 13px;
-  color: #8B5E3C;
-  font-weight: 500;
-  margin: 0 0 12px;
-}
-
-.hint-text {
-  text-align: center;
-  font-size: 12px;
-  color: #aaa;
-  padding: 8px 0 24px;
+  font-size: 14px; color: #5A7560;
+  font-weight: 600; margin: 0 0 14px;
 }
 </style>

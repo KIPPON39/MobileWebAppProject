@@ -1,14 +1,14 @@
 <template>
   <ion-page>
     <ion-header>
-      <ion-toolbar color="primary">
+      <ion-toolbar class="detail-toolbar">
         <ion-buttons slot="start">
-          <ion-back-button default-href="/tabs/search" text="" />
+          <ion-back-button default-href="/tabs/search" text="" style="--color:#3DAA6B" />
         </ion-buttons>
-        <ion-title class="ion-text-center">{{ place?.name || 'รายละเอียด' }}</ion-title>
+        <ion-title class="ion-text-center detail-title">{{ place?.name || 'รายละเอียด' }}</ion-title>
         <ion-buttons slot="end">
           <ion-button @click="toggleFavorite">
-            <ion-icon :icon="isFavorite ? heart : heartOutline" color="light" />
+            <ion-icon :icon="isFavorite ? heart : heartOutline" :style="{ color: isFavorite ? '#FF7B54' : '#3DAA6B' }" />
           </ion-button>
         </ion-buttons>
       </ion-toolbar>
@@ -30,12 +30,10 @@
         <div class="rating-row">
           <span class="rating-big">⭐ {{ (place.rating || 0).toFixed(1) }}</span>
           <span class="review-count">({{ place.reviewCount || 0 }} รีวิว)</span>
-          <ion-chip :class="['diff-chip', diffClass]">{{ place.difficulty }}</ion-chip>
+          <span :class="['diff-badge', diffClass]">{{ place.difficulty }}</span>
         </div>
         <div class="type-row">
-          <ion-chip v-for="t in (place.type || [])" :key="t" color="primary" outline class="type-chip">
-            {{ t }}
-          </ion-chip>
+          <span v-for="t in (place.type || [])" :key="t" class="type-chip">{{ t }}</span>
         </div>
         <p class="desc-text">{{ place.description }}</p>
       </div>
@@ -131,6 +129,8 @@
           v-for="r in filteredReviews"
           :key="r.id"
           :review="r"
+          :can-delete="r.uid === currentUser?.uid"
+          @delete="deleteReview"
         />
       </div>
 
@@ -172,37 +172,31 @@
             <div class="tag-group">
               <p class="tag-group-label">ความแออัด:</p>
               <div class="tag-chips">
-                <ion-chip
+                <button
                   v-for="tag in crowdTags" :key="tag"
-                  :color="reviewForm.tags.includes(tag) ? 'primary' : 'light'"
-                  :outline="!reviewForm.tags.includes(tag)"
+                  :class="['tag-chip', { 'tag-chip-active': reviewForm.tags.includes(tag) }]"
                   @click="toggleTag(tag)"
-                  class="tag-chip"
-                >{{ tag }}</ion-chip>
+                >{{ tag }}</button>
               </div>
             </div>
             <div class="tag-group">
               <p class="tag-group-label">เหมาะกับ:</p>
               <div class="tag-chips">
-                <ion-chip
+                <button
                   v-for="tag in suitableTags" :key="tag"
-                  :color="reviewForm.tags.includes(tag) ? 'primary' : 'light'"
-                  :outline="!reviewForm.tags.includes(tag)"
+                  :class="['tag-chip', { 'tag-chip-active': reviewForm.tags.includes(tag) }]"
                   @click="toggleTag(tag)"
-                  class="tag-chip"
-                >{{ tag }}</ion-chip>
+                >{{ tag }}</button>
               </div>
             </div>
             <div class="tag-group">
               <p class="tag-group-label">ฤดูกาล:</p>
               <div class="tag-chips">
-                <ion-chip
+                <button
                   v-for="tag in seasonTags" :key="tag"
-                  :color="reviewForm.tags.includes(tag) ? 'primary' : 'light'"
-                  :outline="!reviewForm.tags.includes(tag)"
+                  :class="['tag-chip', { 'tag-chip-active': reviewForm.tags.includes(tag) }]"
                   @click="toggleTag(tag)"
-                  class="tag-chip"
-                >{{ tag }}</ion-chip>
+                >{{ tag }}</button>
               </div>
             </div>
           </div>
@@ -288,7 +282,7 @@ import { ref, computed, onMounted, onUnmounted, reactive } from 'vue'
 import { useRoute } from 'vue-router'
 import {
   IonPage, IonHeader, IonToolbar, IonTitle, IonButtons, IonBackButton,
-  IonButton, IonIcon, IonContent, IonChip, IonLabel,
+  IonButton, IonIcon, IonContent, IonLabel,
   IonItem, IonTextarea, IonDatetime, IonDatetimeButton, IonModal,
   IonSegment, IonSegmentButton, IonActionSheet, IonToast, IonSpinner
 } from '@ionic/vue'
@@ -296,7 +290,7 @@ import { heart, heartOutline } from 'ionicons/icons'
 import L from 'leaflet'
 import {
   doc, getDoc, collection, onSnapshot, query, orderBy,
-  addDoc, updateDoc, increment, serverTimestamp,
+  addDoc, updateDoc, deleteDoc, increment, serverTimestamp,
   arrayUnion, arrayRemove, Timestamp
 } from 'firebase/firestore'
 import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage'
@@ -436,11 +430,15 @@ const initMiniMap = () => {
   L.marker([place.value.lat, place.value.lng]).addTo(miniMap)
 }
 
-const checkFavorite = () => {
+const checkFavorite = async () => {
   if (!currentUser.value) return
-  const favorites: string[] = currentUser.value.photoURL ? [] : []
-  // Will be checked from Firestore in a full implementation - simplified here
-  isFavorite.value = false
+  try {
+    const userSnap = await getDoc(doc(db, 'users', currentUser.value.uid))
+    if (userSnap.exists()) {
+      const favorites: string[] = userSnap.data().favorites || []
+      isFavorite.value = favorites.includes(placeId)
+    }
+  } catch {}
 }
 
 const toggleFavorite = async () => {
@@ -515,7 +513,7 @@ const submitReview = async () => {
     }
 
     const visitTs = Timestamp.fromDate(new Date(reviewForm.visitDate))
-    await addDoc(collection(db, 'places', placeId, 'reviews'), {
+    const reviewData = {
       uid: currentUser.value.uid,
       displayName: currentUser.value.displayName || 'ไม่ระบุชื่อ',
       rating: reviewForm.rating,
@@ -523,8 +521,19 @@ const submitReview = async () => {
       tags: reviewForm.tags,
       comment: reviewForm.comment,
       images: imageUrls,
+      placeName: place.value?.name || '',
+      placeId: placeId,
       createdAt: serverTimestamp()
+    }
+    // Write to place reviews and get the ID
+    const placeReviewRef = await addDoc(collection(db, 'places', placeId, 'reviews'), reviewData)
+    // Write to user reviews with cross-reference
+    const userReviewRef = await addDoc(collection(db, 'users', currentUser.value.uid, 'reviews'), {
+      ...reviewData,
+      placeReviewId: placeReviewRef.id
     })
+    // Store back-reference in place review
+    await updateDoc(placeReviewRef, { userReviewId: userReviewRef.id })
 
     // Update reviewCount on place and user
     await updateDoc(doc(db, 'places', placeId), { reviewCount: increment(1) })
@@ -551,17 +560,40 @@ const showToastMsg = (msg: string, color: string) => {
   toastColor.value = color
   showToast.value = true
 }
+
+const deleteReview = async (review: any) => {
+  if (!currentUser.value) return
+  try {
+    await deleteDoc(doc(db, 'places', placeId, 'reviews', review.id))
+    if (review.userReviewId) {
+      await deleteDoc(doc(db, 'users', review.uid, 'reviews', review.userReviewId))
+    }
+    await updateDoc(doc(db, 'places', placeId), { reviewCount: increment(-1) })
+    await updateDoc(doc(db, 'users', review.uid), { reviewCount: increment(-1) })
+    showToastMsg('ลบรีวิวเรียบร้อยแล้ว', 'medium')
+  } catch {
+    showToastMsg('เกิดข้อผิดพลาดในการลบรีวิว', 'danger')
+  }
+}
 </script>
 
 <style scoped>
-ion-header ion-toolbar {
-  --background: #2D6A4F;
-  --color: #ffffff;
+/* ── Toolbar ── */
+.detail-toolbar {
+  --background: #ffffff;
+  --border-color: #DAE8DA;
+  border-bottom: 1px solid #DAE8DA;
+}
+.detail-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: #1A2C1A;
 }
 
+/* ── Hero ── */
 .hero-wrap {
   position: relative;
-  height: 240px;
+  height: 260px;
 }
 .hero-image {
   width: 100%;
@@ -574,91 +606,96 @@ ion-header ion-toolbar {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 64px;
-  background: linear-gradient(135deg, #c8e6c9, #a5d6a7);
+  font-size: 72px;
+  background: linear-gradient(135deg, #E8F8EF, #A8D5B5);
 }
 .hero-overlay {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: linear-gradient(transparent, rgba(0,0,0,0.6));
-  padding: 16px;
+  bottom: 0; left: 0; right: 0;
+  background: linear-gradient(transparent, rgba(0,0,0,0.65));
+  padding: 20px 16px 16px;
 }
 .hero-title {
-  font-size: 22px;
-  font-weight: 700;
+  font-size: 24px;
+  font-weight: 800;
   color: #fff;
   margin: 0 0 4px;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.3);
 }
 .hero-sub {
   font-size: 13px;
-  color: rgba(255,255,255,0.85);
+  color: rgba(255,255,255,0.88);
   margin: 0;
 }
 
+/* ── Sections ── */
 .section-pad {
-  padding: 16px;
-  border-bottom: 1px solid #e8e0d0;
+  padding: 18px 16px;
+  border-bottom: 1px solid #DAE8DA;
 }
-
 .section-title {
   font-size: 16px;
-  font-weight: 600;
-  color: #1B4332;
-  margin: 0 0 12px;
+  font-weight: 700;
+  color: #1A2C1A;
+  margin: 0 0 14px;
 }
 
+/* ── Rating row ── */
 .rating-row {
   display: flex;
   align-items: center;
   gap: 10px;
   margin-bottom: 10px;
 }
-.rating-big { font-size: 20px; font-weight: 700; color: #2D6A4F; }
-.review-count { font-size: 13px; color: #888; }
-.diff-chip { font-size: 12px; height: 26px; }
-.diff-easy { --background: #52B788; --color: #fff; }
-.diff-medium { --background: #E76F51; --color: #fff; }
-.diff-hard { --background: #c62828; --color: #fff; }
+.rating-big { font-size: 20px; font-weight: 800; color: #3DAA6B; }
+.review-count { font-size: 13px; color: #8BAA8B; }
 
-.type-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 10px;
+.diff-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
 }
-.type-chip { font-size: 12px; height: 26px; }
+.diff-easy  { background: #DCFCE7; color: #16A34A; }
+.diff-medium { background: #FEF9C3; color: #B45309; }
+.diff-hard  { background: #FEE2E2; color: #DC2626; }
 
-.desc-text {
-  font-size: 14px;
-  color: #555;
-  line-height: 1.7;
-  margin: 0;
+.type-row { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 12px; }
+.type-chip {
+  display: inline-block;
+  background: #E8F8EF;
+  color: #3DAA6B;
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 600;
 }
 
-/* Community Report */
-.community-section { background: #fffbf5; }
+.desc-text { font-size: 14px; color: #4A6A4A; line-height: 1.75; margin: 0; }
+
+/* ── Community Report ── */
+.community-section { background: #F8FFF9; }
 .report-card {
   display: flex;
   align-items: center;
   gap: 12px;
-  border-radius: 12px;
-  padding: 12px 16px;
+  border-radius: 14px;
+  padding: 13px 16px;
   margin-bottom: 12px;
   border-left: 4px solid currentColor;
 }
-.report-ok { background: #e8f5e9; color: #2D6A4F; }
-.report-warn { background: #fff8e1; color: #F9A825; }
-.report-info { background: #e3f2fd; color: #1976d2; }
-.report-danger { background: #ffebee; color: #c62828; }
+.report-ok     { background: #DCFCE7; color: #16A34A; }
+.report-warn   { background: #FEF9C3; color: #B45309; }
+.report-info   { background: #DBEAFE; color: #1D4ED8; }
+.report-danger { background: #FEE2E2; color: #DC2626; }
 .report-icon { font-size: 24px; }
-.report-text strong { font-size: 14px; }
+.report-text strong { font-size: 14px; font-weight: 700; }
 .report-text p { font-size: 12px; margin: 2px 0 0; opacity: 0.75; }
-.report-empty { text-align: center; color: #999; font-size: 13px; padding: 8px 0 12px; }
-.report-btn { --border-radius: 10px; }
+.report-empty { text-align: center; color: #8BAA8B; font-size: 13px; padding: 8px 0 12px; }
+.report-btn { --border-radius: 12px; --border-color: #3DAA6B; --color: #3DAA6B; }
 
-/* Info Grid */
+/* ── Info Grid ── */
 .info-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -666,62 +703,82 @@ ion-header ion-toolbar {
 }
 .info-item {
   background: #fff;
-  border-radius: 10px;
-  padding: 10px 12px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  border-radius: 14px;
+  padding: 12px 13px;
+  box-shadow: 0 2px 8px rgba(61,170,107,0.07);
+  border: 1px solid #DAE8DA;
 }
-.info-label { display: block; font-size: 11px; color: #888; margin-bottom: 4px; }
-.info-value { font-size: 13px; font-weight: 500; color: #333; }
+.info-label { display: block; font-size: 11px; color: #8BAA8B; margin-bottom: 5px; }
+.info-value { font-size: 13px; font-weight: 600; color: #1A2C1A; }
 
-/* Mini Map */
+/* ── Mini Map ── */
 .mini-map {
-  height: 180px;
-  border-radius: 12px;
+  height: 190px;
+  border-radius: 16px;
   overflow: hidden;
-  margin-bottom: 12px;
+  margin-bottom: 13px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+}
+.navigate-btn {
+  --background: #3DAA6B;
+  --background-activated: #1E6E43;
+  --border-radius: 14px;
+  --color: #fff;
+  font-weight: 700;
 }
 
-.navigate-btn { --border-radius: 10px; }
-
-/* Review Form */
-.review-form-section { background: #fffbf5; }
+/* ── Review Form ── */
+.review-form-section { background: #F8FFF9; }
 .form-item {
   --background: #ffffff;
-  --border-radius: 10px;
-  margin-bottom: 12px;
-  border-radius: 10px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  --border-radius: 14px;
+  margin-bottom: 13px;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(61,170,107,0.07);
+  border: 1px solid #DAE8DA;
 }
-.form-item-plain {
-  margin-bottom: 14px;
-}
+.form-item-plain { margin-bottom: 16px; }
 .form-label {
   font-size: 13px;
-  font-weight: 500;
-  color: #555;
+  font-weight: 600;
+  color: #4A6A4A;
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 9px;
 }
-.required { color: #E76F51; }
+.required { color: #FF7B54; }
 
-.stars-row {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.star-btn { font-size: 28px; cursor: pointer; opacity: 0.35; transition: opacity 0.15s; }
+.stars-row { display: flex; align-items: center; gap: 8px; }
+.star-btn { font-size: 30px; cursor: pointer; opacity: 0.25; transition: opacity 0.15s, transform 0.1s; }
 .star-btn.active { opacity: 1; }
-.rating-text { font-size: 15px; font-weight: 600; color: #2D6A4F; margin-left: 4px; }
+.star-btn:active { transform: scale(0.9); }
+.rating-text { font-size: 15px; font-weight: 700; color: #3DAA6B; margin-left: 6px; }
 
-.tag-groups { display: flex; flex-direction: column; gap: 10px; }
-.tag-group-label { font-size: 12px; color: #888; margin: 0 0 6px; }
-.tag-chips { display: flex; flex-wrap: wrap; gap: 6px; }
-.tag-chip { font-size: 12px; height: 28px; cursor: pointer; }
+.tag-groups { display: flex; flex-direction: column; gap: 12px; }
+.tag-group-label { font-size: 12px; color: #8BAA8B; margin: 0 0 7px; font-weight: 600; }
+.tag-chips { display: flex; flex-wrap: wrap; gap: 7px; }
+.tag-chip {
+  background: #ffffff;
+  border: 1.5px solid #DAE8DA;
+  border-radius: 20px;
+  padding: 5px 13px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #4A6A4A;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: inherit;
+}
+.tag-chip-active {
+  background: #E8F8EF;
+  border-color: #3DAA6B;
+  color: #3DAA6B;
+  font-weight: 700;
+}
 
 .photo-row { display: flex; gap: 10px; flex-wrap: wrap; }
 .photo-preview {
-  width: 80px; height: 80px;
-  border-radius: 10px; overflow: hidden;
+  width: 82px; height: 82px;
+  border-radius: 12px; overflow: hidden;
   position: relative;
 }
 .photo-preview img { width: 100%; height: 100%; object-fit: cover; }
@@ -734,27 +791,44 @@ ion-header ion-toolbar {
   font-size: 12px;
 }
 .photo-add-btn {
-  width: 80px; height: 80px;
-  border-radius: 10px;
-  border: 2px dashed #2D6A4F;
+  width: 82px; height: 82px;
+  border-radius: 12px;
+  border: 2px dashed #3DAA6B;
   display: flex; align-items: center; justify-content: center;
-  font-size: 28px; color: #2D6A4F;
+  font-size: 30px; color: #3DAA6B;
   cursor: pointer;
+  background: #F8FFF9;
+  transition: background 0.15s;
 }
+.photo-add-btn:active { background: #E8F8EF; }
 .hidden-input { display: none; }
 
-.submit-btn { --border-radius: 12px; height: 50px; font-size: 15px; margin-top: 8px; }
+.submit-btn {
+  --background: #3DAA6B;
+  --background-activated: #1E6E43;
+  --border-radius: 14px;
+  --color: #fff;
+  height: 52px;
+  font-size: 16px;
+  font-weight: 700;
+  margin-top: 10px;
+}
 
-/* Reviews */
-.reviews-header { margin-bottom: 12px; }
-.review-segment { --background: #e8e0d0; margin-bottom: 8px; }
+/* ── Reviews ── */
+.reviews-header { margin-bottom: 14px; }
+.review-segment {
+  --background: #E8F8EF;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
 .no-reviews {
   text-align: center;
-  padding: 24px;
-  color: #999;
+  padding: 28px;
+  color: #8BAA8B;
   font-size: 14px;
 }
-.no-reviews div { font-size: 32px; margin-bottom: 8px; }
+.no-reviews div { font-size: 36px; margin-bottom: 10px; }
 
 .loading-state {
   display: flex;

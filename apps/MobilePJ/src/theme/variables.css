@@ -1,60 +1,127 @@
-/* PaiKanThoe - ไปกันเธอ Theme Variables */
+/* ============================================================
+   PaiKanThoe — ไปกันเธอ  |  Design System v2
+   Modern · Minimal · Friendly
+   ============================================================ */
 
 * {
   font-family: 'Kanit', sans-serif !important;
+  -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box;
 }
 
 :root {
-  /** primary - เขียวป่า **/
-  --ion-color-primary: #2D6A4F;
-  --ion-color-primary-rgb: 45, 106, 79;
-  --ion-color-primary-contrast: #ffffff;
-  --ion-color-primary-contrast-rgb: 255, 255, 255;
-  --ion-color-primary-shade: #275d45;
-  --ion-color-primary-tint: #427961;
+  /* ── Brand Colors ──────────────────────────── */
+  --pkt-primary:       #3DAA6B;
+  --pkt-primary-dark:  #1E6E43;
+  --pkt-primary-light: #E8F8EF;
+  --pkt-primary-mid:   #A8D5B5;
+  --pkt-accent:        #FF7B54;
+  --pkt-accent-soft:   #FFF0EB;
+  --pkt-star:          #F4A916;
 
-  /** secondary - น้ำตาล **/
-  --ion-color-secondary: #8B5E3C;
-  --ion-color-secondary-rgb: 139, 94, 60;
-  --ion-color-secondary-contrast: #ffffff;
-  --ion-color-secondary-contrast-rgb: 255, 255, 255;
-  --ion-color-secondary-shade: #7a5235;
-  --ion-color-secondary-tint: #976e50;
+  /* ── Neutrals ──────────────────────────────── */
+  --pkt-bg:        #F4F9F5;
+  --pkt-surface:   #FFFFFF;
+  --pkt-surface2:  #F8FDF9;
+  --pkt-border:    #DAE8DA;
+  --pkt-overlay:   rgba(0,0,0,0.04);
 
-  /** tertiary - ส้ม accent **/
-  --ion-color-tertiary: #E76F51;
-  --ion-color-tertiary-rgb: 231, 111, 81;
-  --ion-color-tertiary-contrast: #ffffff;
-  --ion-color-tertiary-contrast-rgb: 255, 255, 255;
-  --ion-color-tertiary-shade: #cb6247;
-  --ion-color-tertiary-tint: #e97d62;
+  /* ── Text ──────────────────────────────────── */
+  --pkt-text:    #1A2C1A;
+  --pkt-text2:   #4A6A4A;
+  --pkt-text3:   #8BAA8B;
 
-  --ion-color-success: #2dd36f;
-  --ion-color-warning: #ffc409;
-  --ion-color-danger: #eb445a;
-  --ion-color-medium: #92949c;
-  --ion-color-light: #F9F3E3;
+  /* ── Difficulty / Status ───────────────────── */
+  --pkt-easy:   #40C067;
+  --pkt-medium: #F59E0B;
+  --pkt-hard:   #EF4444;
 
-  --ion-background-color: #F9F3E3;
-  --ion-background-color-rgb: 249, 243, 227;
+  /* ── Border Radius ────────────────────────── */
+  --r-xs:   6px;
+  --r-sm:   10px;
+  --r-md:   16px;
+  --r-lg:   20px;
+  --r-xl:   28px;
+  --r-full: 999px;
 
-  --ion-text-color: #2c2c2c;
-  --ion-text-color-rgb: 44, 44, 44;
+  /* ── Shadows ──────────────────────────────── */
+  --shadow-xs: 0 1px 4px  rgba(0,0,0,0.06);
+  --shadow-sm: 0 2px 10px rgba(0,0,0,0.08);
+  --shadow-md: 0 4px 20px rgba(0,0,0,0.10);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.14);
 
-  --ion-toolbar-background: #2D6A4F;
-  --ion-toolbar-color: #ffffff;
+  /* ── Ionic Color Overrides ────────────────── */
+  --ion-color-primary:              #3DAA6B;
+  --ion-color-primary-rgb:          61,170,107;
+  --ion-color-primary-contrast:     #ffffff;
+  --ion-color-primary-contrast-rgb: 255,255,255;
+  --ion-color-primary-shade:        #359559;
+  --ion-color-primary-tint:         #50B379;
 
-  --ion-tab-bar-background: #ffffff;
-  --ion-tab-bar-color: #92949c;
-  --ion-tab-bar-color-selected: #2D6A4F;
+  --ion-color-secondary:            #FF7B54;
+  --ion-color-secondary-rgb:        255,123,84;
+  --ion-color-secondary-contrast:   #ffffff;
+  --ion-color-secondary-shade:      #E06848;
+  --ion-color-secondary-tint:       #FF8A65;
 
-  --ion-item-background: #ffffff;
-  --ion-card-background: #ffffff;
+  --ion-color-tertiary:             #F4A916;
+  --ion-color-tertiary-rgb:         244,169,22;
+  --ion-color-tertiary-contrast:    #ffffff;
+  --ion-color-tertiary-shade:       #D89312;
+  --ion-color-tertiary-tint:        #F5B22D;
 
-  --pkt-green: #2D6A4F;
-  --pkt-cream: #F9F3E3;
-  --pkt-brown: #8B5E3C;
-  --pkt-orange: #E76F51;
-  --pkt-light-green: #52B788;
-  --pkt-dark-green: #1B4332;
+  --ion-color-success:             #40C067;
+  --ion-color-warning:             #F59E0B;
+  --ion-color-danger:              #EF4444;
+  --ion-color-medium:              #8BAA8B;
+  --ion-color-light:               #F4F9F5;
+
+  --ion-background-color:          #F4F9F5;
+  --ion-background-color-rgb:      244,249,245;
+
+  --ion-text-color:                #1A2C1A;
+  --ion-text-color-rgb:            26,44,26;
+
+  --ion-toolbar-background:        #ffffff;
+  --ion-toolbar-color:             #1A2C1A;
+
+  --ion-tab-bar-background:        #ffffff;
+  --ion-tab-bar-color:             #8BAA8B;
+  --ion-tab-bar-color-selected:    #3DAA6B;
+
+  --ion-item-background:           #ffffff;
+  --ion-card-background:           #ffffff;
+
+  /* ── Legacy Aliases (backwards compat) ────── */
+  --pkt-green:       #3DAA6B;
+  --pkt-cream:       #F4F9F5;
+  --pkt-brown:       #8B5E3C;
+  --pkt-orange:      #FF7B54;
+  --pkt-light-green: #50B379;
+  --pkt-dark-green:  #1E6E43;
+}
+
+/* ── Global Resets ───────────────────────────── */
+ion-content {
+  --background: var(--pkt-bg);
+}
+ion-header {
+  box-shadow: none !important;
+  &::after { display: none; }
+}
+ion-toolbar {
+  --border-width: 0 !important;
+}
+ion-item {
+  --highlight-color-focused: var(--pkt-primary);
+}
+ion-button {
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+ion-chip {
+  font-weight: 500;
+}
+h1, h2, h3, h4, h5, h6, p, span, label {
+  font-family: 'Kanit', sans-serif !important;
 }

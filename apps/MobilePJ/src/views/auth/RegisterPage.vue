@@ -144,76 +144,84 @@ const handleRegister = async () => {
 
 <style scoped>
 .register-page {
-  --background: #F9F3E3;
+  --background: #F4F9F5;
 }
 
 .register-container {
-  padding: 0 0 24px;
+  padding: 0 0 32px;
 }
 
 .header-section {
-  background: linear-gradient(160deg, #1B4332 0%, #2D6A4F 100%);
-  padding: 60px 20px 40px;
+  background: linear-gradient(160deg, #1E6E43 0%, #3DAA6B 100%);
+  padding: 64px 22px 44px;
   position: relative;
 }
 
 .back-btn {
-  --color: rgba(255,255,255,0.8);
+  --color: rgba(255,255,255,0.9);
   position: absolute;
-  top: 52px;
+  top: 54px;
   left: 8px;
-  font-size: 20px;
+  font-size: 22px;
 }
 
 .page-title {
-  font-size: 28px;
-  font-weight: 700;
+  font-size: 34px;
+  font-weight: 900;
   color: #ffffff;
   margin: 0 0 8px;
+  letter-spacing: -0.5px;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
 
 .page-subtitle {
-  font-size: 14px;
-  color: rgba(255,255,255,0.75);
+  font-size: 15px;
+  color: rgba(255,255,255,0.85);
   margin: 0;
+  font-weight: 500;
 }
 
 .form-section {
-  padding: 24px 20px;
+  padding: 28px 22px;
 }
 
 .input-item {
   --background: #ffffff;
-  --border-radius: 12px;
-  --padding-start: 12px;
-  margin-bottom: 12px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  --border-radius: 14px;
+  --padding-start: 14px;
+  margin-bottom: 14px;
+  border-radius: 14px;
+  border: 2px solid #DAE8DA;
+  box-shadow: 0 2px 8px rgba(61,170,107,0.06);
 }
 
 .register-btn {
-  --background: #E76F51;
-  --background-activated: #c85c3f;
-  --border-radius: 12px;
+  --background: #3DAA6B;
+  --background-activated: #1E6E43;
+  --background-hover: #34956e;
+  --border-radius: 14px;
   --color: #ffffff;
-  font-weight: 600;
-  font-size: 16px;
-  height: 52px;
-  margin-top: 8px;
+  font-weight: 800;
+  font-size: 17px;
+  height: 54px;
+  margin-top: 12px;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 16px rgba(61,170,107,0.35);
 }
 
 .login-link {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 16px;
-  color: #666;
+  margin-top: 18px;
+  color: #4A6A4A;
   font-size: 14px;
+  font-weight: 500;
 }
 
 .link-btn {
-  --color: #2D6A4F;
-  font-weight: 600;
-  font-size: 14px;
+  --color: #3DAA6B;
+  font-weight: 800;
+  font-size: 15px;
 }
 </style>

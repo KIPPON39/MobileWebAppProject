@@ -110,83 +110,104 @@ const handleLogin = async () => {
 
 <style scoped>
 .login-page {
-  --background: linear-gradient(160deg, #1B4332 0%, #2D6A4F 50%, #52B788 100%);
+  --background: #3DAA6B;
 }
 
 .login-container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  padding: 40px 24px 24px;
+  padding: 0;
+  background: linear-gradient(170deg, #1E6E43 0%, #3DAA6B 45%, #6FCC97 100%);
 }
 
 .logo-section {
   text-align: center;
-  padding: 48px 0 40px;
+  padding: 56px 24px 40px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .logo-icon {
-  font-size: 72px;
+  font-size: 80px;
   line-height: 1;
-  margin-bottom: 12px;
-  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+  margin-bottom: 16px;
+  filter: drop-shadow(0 6px 16px rgba(0,0,0,0.25));
 }
 
 .app-title {
-  font-size: 36px;
-  font-weight: 700;
+  font-size: 42px;
+  font-weight: 900;
   color: #ffffff;
   margin: 0 0 8px;
-  text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  letter-spacing: -1px;
+  text-shadow: 0 3px 12px rgba(0,0,0,0.2);
 }
 
 .app-subtitle {
-  font-size: 15px;
-  color: rgba(255,255,255,0.8);
+  font-size: 16px;
+  color: rgba(255,255,255,0.88);
   margin: 0;
-  font-weight: 300;
+  font-weight: 500;
+  letter-spacing: 0.3px;
 }
 
 .form-section {
-  background: #F9F3E3;
-  border-radius: 24px 24px 0 0;
-  padding: 32px 20px 24px;
-  flex: 1;
-  margin-top: auto;
+  background: #ffffff;
+  border-radius: 32px 32px 0 0;
+  padding: 36px 24px 32px;
+  box-shadow: 0 -8px 32px rgba(0,0,0,0.12);
+}
+
+.form-section::before {
+  content: '';
+  display: block;
+  width: 40px;
+  height: 4px;
+  background: #DAE8DA;
+  border-radius: 99px;
+  margin: 0 auto 28px;
 }
 
 .input-item {
-  --background: #ffffff;
-  --border-radius: 12px;
-  --padding-start: 12px;
-  margin-bottom: 12px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  --background: #F4F9F5;
+  --border-radius: 14px;
+  --padding-start: 14px;
+  margin-bottom: 14px;
+  border-radius: 14px;
+  border: 2px solid #DAE8DA;
 }
 
 .login-btn {
-  --background: #2D6A4F;
-  --background-activated: #1B4332;
-  --border-radius: 12px;
+  --background: #3DAA6B;
+  --background-activated: #1E6E43;
+  --background-hover: #34956e;
+  --border-radius: 14px;
   --color: #ffffff;
-  font-weight: 600;
-  font-size: 16px;
-  height: 52px;
-  margin-top: 8px;
+  font-weight: 800;
+  font-size: 17px;
+  height: 54px;
+  margin-top: 12px;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 16px rgba(61,170,107,0.4);
 }
 
 .register-link {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 16px;
-  color: #666;
+  margin-top: 18px;
+  color: #4A6A4A;
   font-size: 14px;
+  font-weight: 500;
 }
 
 .link-btn {
-  --color: #2D6A4F;
-  font-weight: 600;
-  font-size: 14px;
+  --color: #3DAA6B;
+  font-weight: 800;
+  font-size: 15px;
 }
 </style>

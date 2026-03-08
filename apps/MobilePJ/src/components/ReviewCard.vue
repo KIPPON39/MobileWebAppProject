@@ -7,18 +7,17 @@
           <strong class="reviewer-name">{{ review.displayName }}</strong>
           <span class="reviewer-badge" :class="badgeClass">{{ badgeLabel }}</span>
         </div>
-        <span class="visit-date">ไปเมื่อ: {{ formatDate(review.visitDate) }}</span>
+        <span class="visit-date">ไปเมื่อ {{ formatDate(review.visitDate) }}</span>
       </div>
-      <div class="review-rating">
-        <span v-for="n in 5" :key="n" :class="n <= review.rating ? 'star-on' : 'star-off'">⭐</span>
+      <div class="star-row">
+        <span v-for="n in 5" :key="n" :class="n <= review.rating ? 'star-on' : 'star-off'">★</span>
       </div>
+      <button v-if="canDelete" class="delete-btn" @click.stop="emit('delete', review)">🗑️</button>
     </div>
 
     <!-- Tags -->
     <div v-if="review.tags && review.tags.length > 0" class="tags-row">
-      <ion-chip v-for="tag in review.tags" :key="tag" color="primary" outline class="review-tag">
-        {{ tag }}
-      </ion-chip>
+      <span v-for="tag in review.tags" :key="tag" class="review-tag">{{ tag }}</span>
     </div>
 
     <!-- Place name (for profile page) -->
@@ -54,7 +53,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { IonChip, IonModal, IonContent } from '@ionic/vue'
+import { IonModal, IonContent } from '@ionic/vue'
 import { Timestamp } from 'firebase/firestore'
 
 interface Review {
@@ -74,6 +73,11 @@ interface Review {
 const props = defineProps<{
   review: Review
   showPlaceName?: boolean
+  canDelete?: boolean
+}>()
+
+const emit = defineEmits<{
+  (e: 'delete', review: Review): void
 }>()
 
 const selectedImage = ref('')
@@ -112,128 +116,104 @@ const openImage = (url: string) => { selectedImage.value = url }
 <style scoped>
 .review-card {
   background: #ffffff;
-  border-radius: 14px;
-  padding: 14px;
+  border-radius: 16px;
+  padding: 16px;
   margin-bottom: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 10px rgba(61,170,107,0.08);
+  border-left: 4px solid #3DAA6B;
 }
 
+/* ── Reviewer Header ── */
 .reviewer-row {
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
-
 .avatar {
-  width: 38px;
-  height: 38px;
+  width: 42px; height: 42px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #2D6A4F, #52B788);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 13px;
-  font-weight: 700;
-  color: #fff;
-  flex-shrink: 0;
+  background: linear-gradient(135deg, #3DAA6B, #A8D5B5);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700;
+  color: #fff; flex-shrink: 0;
+  letter-spacing: 0.5px;
 }
-
 .reviewer-info {
-  flex: 1;
-  min-width: 0;
+  flex: 1; min-width: 0;
 }
-
 .reviewer-name-row {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
+  display: flex; align-items: center; gap: 6px;
+  flex-wrap: wrap; margin-bottom: 3px;
 }
-
 .reviewer-name {
-  font-size: 14px;
-  color: #1B4332;
+  font-size: 14px; font-weight: 700;
+  color: #1A2C1A;
 }
-
 .reviewer-badge {
-  font-size: 10px;
-  padding: 2px 8px;
-  border-radius: 10px;
-  font-weight: 500;
+  font-size: 10px; font-weight: 600;
+  padding: 2px 8px; border-radius: 999px;
 }
-.badge-newbie { background: #e8f5e9; color: #2D6A4F; }
-.badge-camper { background: #fff3e0; color: #E76F51; }
-.badge-explorer { background: #fff8e1; color: #F9A825; }
+.badge-newbie   { background: #E8F8EF; color: #1E6E43; }
+.badge-camper   { background: #FFF0EB; color: #C04E29; }
+.badge-explorer { background: #FFF8E1; color: #B07A00; }
 
-.visit-date {
-  font-size: 11px;
-  color: #999;
-  display: block;
-  margin-top: 2px;
+.visit-date { font-size: 11px; color: #8BAA8B; }
+
+.star-row {
+  display: flex; gap: 2px; flex-shrink: 0;
+  font-size: 16px;
 }
+.star-on  { color: #F4A916; }
+.star-off { color: #D8EAD8; }
 
-.review-rating {
+.delete-btn {
+  background: none; border: none;
+  font-size: 16px; cursor: pointer;
+  padding: 2px 0 2px 6px;
   flex-shrink: 0;
-  font-size: 12px;
+  opacity: 0.6;
+  line-height: 1;
 }
-.star-on { opacity: 1; }
-.star-off { opacity: 0.2; }
+.delete-btn:active { opacity: 1; }
 
+/* ── Tags ── */
 .tags-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  margin-bottom: 8px;
+  display: flex; flex-wrap: wrap; gap: 5px;
+  margin-bottom: 10px;
 }
-
 .review-tag {
-  font-size: 11px;
-  height: 22px;
-  margin: 0;
+  background: #E8F8EF; color: #1E6E43;
+  font-size: 11px; font-weight: 600;
+  padding: 3px 10px; border-radius: 999px;
 }
 
 .place-name-badge {
-  font-size: 12px;
-  color: #8B5E3C;
-  margin: 0 0 8px;
-  font-weight: 500;
+  font-size: 12px; color: #5A7560;
+  margin: 0 0 8px; font-weight: 500;
 }
 
+/* ── Comment ── */
 .review-comment {
-  font-size: 13px;
-  color: #444;
-  line-height: 1.6;
-  margin: 0 0 8px;
+  font-size: 14px; color: #2C3E2C;
+  line-height: 1.6; margin: 0 0 10px;
 }
 
+/* ── Images ── */
 .image-row {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
+  display: flex; gap: 8px; flex-wrap: wrap;
 }
-
 .review-image {
-  width: 90px;
-  height: 90px;
-  object-fit: cover;
-  border-radius: 8px;
+  width: 82px; height: 82px;
+  border-radius: 12px; object-fit: cover;
   cursor: pointer;
 }
-
 .image-viewer {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.9);
-  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  height: 100%; background: #000;
 }
-
 .image-full {
-  max-width: 100%;
-  max-height: 100%;
+  max-width: 100%; max-height: 100%;
   object-fit: contain;
 }
 </style>
