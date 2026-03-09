@@ -87,7 +87,18 @@ import {
   IonPage, IonHeader, IonToolbar, IonContent,
   IonSpinner, IonToast
 } from '@ionic/vue'
-import { doc, collection, onSnapshot, getDocs, deleteDoc, updateDoc, increment } from 'firebase/firestore'
+import {
+  doc,
+  collection,
+  onSnapshot,
+  getDocs,
+  deleteDoc,
+  updateDoc,
+  increment,
+  query,
+  where,
+  collectionGroup
+} from 'firebase/firestore'
 import { db } from '../firebase/config'
 import { useAuth } from '../composables/useAuth'
 import ReviewCard from '../components/ReviewCard.vue'
