@@ -184,7 +184,6 @@ onMounted(async () => {
     zoomControl: false,
     scrollWheelZoom: true,
     dragging: true,
-    tap: true
   })
   L.control.zoom({ position: 'bottomright' }).addTo(map)
 
@@ -220,16 +219,19 @@ onMounted(async () => {
     })
   })
 
-  window.addEventListener('go-detail', handleGoDetail as EventListener)
+  window.addEventListener('go-detail', handleGoDetail)
 })
 
 onUnmounted(() => {
   unsubscribe?.()
-  window.removeEventListener('go-detail', handleGoDetail as EventListener)
+  window.removeEventListener('go-detail', handleGoDetail)
   map?.remove()
 })
 
-const handleGoDetail = (e: CustomEvent) => router.push(`/detail/${e.detail}`)
+const handleGoDetail = (e: Event) => {
+  const event = e as CustomEvent
+  router.push(`/detail/${event.detail}`)
+}
 const goToSearch = () => router.push('/tabs/search')
 
 const locateMe = () => {

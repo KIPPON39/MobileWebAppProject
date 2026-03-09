@@ -3,9 +3,6 @@
     <ion-content :fullscreen="true">
       <div class="register-container">
         <div class="header-section">
-          <ion-button fill="clear" class="back-btn" router-link="/login">
-            <ion-icon :icon="arrowBackOutline" />
-          </ion-button>
           <h1 class="page-title">สมัครสมาชิก</h1>
           <p class="page-subtitle">ร่วมสำรวจธรรมชาติไทยกับเรา</p>
         </div>
